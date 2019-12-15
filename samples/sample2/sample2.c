@@ -18,5 +18,5 @@ void main() {
     delay(1000);                              // 1秒待つ
   }
 
-  NR52_REG = 0x00U;
+  NR52_REG = 0x00U;                           // サウンド機能off
 }
