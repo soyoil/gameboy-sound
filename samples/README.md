@@ -8,8 +8,11 @@
 - `freq`
   - 周波数を変えてみる
   
-- `sound_sources`
-  - 音をON/OFFしたり，途中で音源を変えてみたりする
+- `regedit`
+  - 自由にサウンドレジスタを編集する
 
 - `edit_NR51`
   - NR51の仕様や扱い方を確かめる
+
+- `charcheck`
+  - (サウンドとは関係ないが)GBDKで`wrtchar`できる文字を調べる

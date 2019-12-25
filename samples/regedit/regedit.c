@@ -1,9 +1,11 @@
 #include<gb/gb.h>
 #include<gb/drawing.h>
+#include<string.h>
+#include<stdlib.h>
 
 unsigned int regs[24];
 unsigned int wave[16];
-char **regname = {
+char *regname[23] = {
     "NR10", "NR11", "NR12", "NR13", "NR14",
     "NR20", "NR21", "NR22", "NR23", "NR24",
     "NR30", "NR31", "NR32", "NR33", "NR34",
@@ -12,16 +14,76 @@ char **regname = {
 };
 
 void init(){
-    __REG *i;
-    int j;
+    int i, j, digit, base;
+    char bin[12] = "00000000";
     NR52_REG = 0x80U;
-    for(i = NR10_REG; i != NR52_REG; i++) i = 0x00U;
-    for(j = 0; j < 23; j++) regs[j] = 0;
+    for(i = 0xff10; i != 0xff26; i++) (*(__REG)i) = 0x00U;
+    for(i = 0; i < 23; i++) regs[i] = 0;
     regs[23] = 0x80U;
+
+    gotogxy(0, 0);
+    gprintf("----SOUND EDITOR----");
+    for(i = 0; i < 5; i++){
+        gotogxy(2, 3 * i + 2);
+        strcpy(bin, "00000000");
+        j = 7;
+        base = 1;
+        digit = regs[i];
+        while (digit > 0){
+            if(digit % 2) bin[j] = '1';
+            digit /= 2;
+            j--;
+        }
+        if(regs[i] < 16){
+            gprintf("%s  %x", regname[i], regs[i]);
+            gotogxy(7, 3 * i + 2);
+            wrtchr('0');
+        }else{
+            gprintf("%s %x", regname[i], regs[i]);
+        }
+        gotogxy(10, 3 * i + 2);
+        gprintf("%s", bin);
+    }
+    gotogxy(1, 2);
+    wrtchr(259);
+    gotogxy(0, 17);
+    gprintf("-SELECT: help---1/4-");
+}
+
+void start(){
+
+}
+
+void stop(){
+
+}
+
+void scroll(int direction){
+
+}
+
+void edit(int cursor){
+    // upperArrow 257
 }
 
 void main(){
+    int isPlay = 0;
+    int keyState = 0;
+    int cursor = 0;
+    int i;
+
     init();
-    gotogxy(0, 0);
-    gprintf("---SOUND EDITOR---");
+
+    while(1){
+        keyState = joypad();
+        if(keyState & J_UP){
+            scroll(0);
+        }
+        else if(keyState & J_DOWN){
+            scroll(1);
+        }
+        else if(keyState & J_A){
+            edit(cursor);
+        }
+    }
 }
