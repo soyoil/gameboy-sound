@@ -1,7 +1,6 @@
 #include<gb/gb.h>
 #include<gb/drawing.h>
 #include<string.h>
-#include<stdlib.h>
 
 unsigned int regs[24];
 unsigned int wave[16];
@@ -35,9 +34,7 @@ void init(){
             j--;
         }
         if(regs[i] < 16){
-            gprintf("%s  %x", regname[i], regs[i]);
-            gotogxy(7, 3 * i + 2);
-            wrtchr('0');
+            gprintf("%s 0%x", regname[i], regs[i]);
         }else{
             gprintf("%s %x", regname[i], regs[i]);
         }
@@ -50,11 +47,7 @@ void init(){
     gprintf("-SELECT: help---1/4-");
 }
 
-void start(){
-
-}
-
-void stop(){
+void play(){
 
 }
 
@@ -64,6 +57,14 @@ void scroll(int direction){
 
 void edit(int cursor){
     // upperArrow 257
+}
+
+void changePage(int direction){
+
+}
+
+void help(){
+
 }
 
 void main(){
@@ -78,12 +79,16 @@ void main(){
         keyState = joypad();
         if(keyState & J_UP){
             scroll(0);
-        }
-        else if(keyState & J_DOWN){
+        }else if(keyState & J_DOWN){
             scroll(1);
-        }
-        else if(keyState & J_A){
+        }else if(keyState & J_A){
             edit(cursor);
+        }else if(keyState & J_RIGHT){
+            changePage(0);
+        }else if(keyState & J_LEFT){
+            changePage(1);
+        }else if(keyState & J_START){
+            play();
         }
     }
 }
