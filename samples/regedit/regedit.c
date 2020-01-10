@@ -14,6 +14,8 @@ char *regname[23] = {
 int nowPage = 0;
 int cursor = 0;
 
+void help();
+
 void display(int channel){
   int i, j, digit, base;
   char bin[12] = "00000000";
@@ -82,7 +84,43 @@ void scroll(int direction){
   }
 }
 
-void edit(int cursorPos){
+void edit(){
+  int keyState = 0;
+  int cursorPos = 7;
+  gotogxy(1, 3 * cursor + 2);
+  wrtchr(' ');
+  gotogxy(7, 3 * cursor + 3);
+  wrtchr(257);
+  while(1){
+    keyState = joypad();
+    if(keyState & J_B){
+      break;
+    }else if((keyState & J_RIGHT) && cursorPos < 17){
+      if(cursorPos == 8) cursorPos++;
+      gotogxy(++cursorPos-2, 3 * cursor + 3);
+      gprintf("  %c", 257);
+    }else if((keyState & J_LEFT) && cursorPos > 7){
+      if(cursorPos == 10) cursorPos--;
+      gotogxy(--cursorPos, 3 * cursor + 3);
+      gprintf("%c  ", 257); 
+    }else if(keyState & J_UP){
+      // inc
+    }else if(keyState & J_DOWN){
+      //dec
+    }else if(keyState & J_SELECT){
+      help();
+      gotogxy(1, 3 * cursor + 2);
+      wrtchr(' ');
+      gotogxy(cursorPos, 3 * cursor + 3);
+      wrtchr(257);
+    }
+
+    delay(200);
+  }
+  gotogxy(0, 3 * cursor + 3);
+  gprintf("                   ");
+  gotogxy(1, 3 * cursor + 2);
+  wrtchr(259);
   // upperArrow 257
 }
 
@@ -107,11 +145,11 @@ void help(){
     "START button:      "
     };
   char *insts[5] = {
-    "select register",
-    "change channels",
-    "edit value",
-    "Back",
-    "play/stop"
+    "select register  ",
+    "change channels  ",
+    "edit value       ",
+    "back             ",
+    "play/stop        "
   };
   gotogxy(0, 0);
   gprintf("-----HOW TO USE-----");
@@ -124,7 +162,7 @@ void help(){
   gotogxy(9, 17);
   gprintf("back------");
   delay(100);
-  while(!(joypad() & J_SELECT)) {}
+  while(!(joypad() & (J_SELECT | J_B))) {}
   display(nowPage);
 }
 
@@ -142,7 +180,7 @@ void main(){
     }else if(keyState & J_DOWN){
       scroll(1);
     }else if(keyState & J_A){
-      edit(cursor);
+      edit();
     }else if(keyState & J_RIGHT){
       changePage(0);
     }else if(keyState & J_LEFT){
